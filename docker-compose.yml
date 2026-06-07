@@ -1,0 +1,45 @@
+services:
+  auth:
+    build: .
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./src:/service/src
+      - ./alembic.ini:/service/alembic.ini
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - auth-network
+    restart: on-failure
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: cram_auth_pg
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cram_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_auth:/var/lib/postgresql/data
+    networks:
+      - auth-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d cram_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata_auth:
+
+networks:
+  auth-network:
+    driver: bridge
