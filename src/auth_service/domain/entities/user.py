@@ -2,9 +2,8 @@ import uuid
 
 
 class UserPayload:
-    id: uuid.UUID
+    user_id: uuid.UUID
     username: str
-    password: str
 
 
 class UserCreateSchema:
@@ -13,6 +12,6 @@ class UserCreateSchema:
 
 
 class UserResponseSchema:
-    id: uuid.UUID
+    user_id: uuid.UUID
     username: str
     password: str
