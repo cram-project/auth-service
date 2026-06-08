@@ -13,3 +13,6 @@ class IUserRepository(Protocol):
 
     async def detail(self, user_id: uuid.UUID) -> UserResponseSchema:
         pass
+
+    async def get_by_id(self, user_id: uuid.UUID) -> UserResponseSchema:
+        pass
