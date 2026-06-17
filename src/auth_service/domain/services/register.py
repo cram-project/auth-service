@@ -16,16 +16,13 @@ class RegisterService:
             self,
             username: str,
             password: str,
-    ) -> None:
+    ) -> User:
 
         password_hash = self._hasher.hash(password)
-        
+
         user = User(
             username=username,
-            password=password_hash,
+            password_hash=password_hash,
         )
 
-        await self._user.add(user)
-
-
-
+        return await self._user.add(user)

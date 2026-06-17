@@ -2,11 +2,11 @@ from os import getenv
 
 
 class Settings:
-    DB_HOST: str = getenv("DB_HOST")
-    DB_PORT: int = getenv("DB_PORT")
-    DB_NAME: str = getenv("DB_NAME")
-    DB_USER: str = getenv("DB_USER")
-    DB_PASSWORD: str = getenv("DB_PASSWORD")
+    DB_HOST: str = getenv("DB_HOST", "localhost")
+    DB_PORT: str = getenv("DB_PORT", "5433")
+    DB_NAME: str = getenv("DB_NAME", "auth_db")
+    DB_USER: str = getenv("DB_USER", "admin")
+    DB_PASSWORD: str = getenv("DB_PASSWORD", "admin")
 
     SECRET_KEY: str = getenv("SECRET_KEY")
     ALGORITHM: str = "HS256"
@@ -15,10 +15,27 @@ class Settings:
 
     @property
     def DATABASE_URL(self) -> str:
+        host = self._normalized_text(self.DB_HOST, "localhost")
+        user = self._normalized_text(self.DB_USER, "admin")
+        password = self._normalized_text(self.DB_PASSWORD, "admin")
+        database = self._normalized_text(self.DB_NAME, "auth_db")
+        port = self._normalized_port()
         return (
-            f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}"
-            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            f"postgresql+asyncpg://{user}:{password}"
+            f"@{host}:{port}/{database}"
         )
+
+    def _normalized_port(self) -> int:
+        raw_port = (self.DB_PORT or "").strip()
+        if not raw_port or raw_port.lower() in {"none", "null"}:
+            return 5433
+        return int(raw_port)
+
+    def _normalized_text(self, value: str | None, default: str) -> str:
+        normalized = (value or "").strip()
+        if not normalized or normalized.lower() in {"none", "null"}:
+            return default
+        return normalized
 
 
 settings = Settings()

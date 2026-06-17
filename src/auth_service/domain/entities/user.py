@@ -1,17 +1,18 @@
 import uuid
 
+from pydantic import BaseModel
 
-class UserPayload:
+
+class UserPayload(BaseModel):
     user_id: uuid.UUID
     username: str
 
 
-class UserCreateSchema:
+class UserCreateSchema(BaseModel):
     username: str
     password: str
 
 
-class UserResponseSchema:
+class UserResponseSchema(BaseModel):
     user_id: uuid.UUID
     username: str
-    password: str

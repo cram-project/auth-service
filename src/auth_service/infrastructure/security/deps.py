@@ -8,11 +8,8 @@ from src.auth_service.infrastructure.security.token import JWTTokenProvider
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-_token_provider = JWTTokenProvider()
-
-
 def get_token_provider() -> JWTTokenProvider:
-    return _token_provider
+    return JWTTokenProvider()
 
 
 async def get_current_user(

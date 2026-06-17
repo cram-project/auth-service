@@ -2,10 +2,11 @@ from typing import Annotated
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from src.auth_service.config import settings
 
 
 engine = create_async_engine(
-    "DATABASE",
+    settings.DATABASE_URL,
     echo=True
 )
 
