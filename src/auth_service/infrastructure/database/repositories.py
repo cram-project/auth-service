@@ -1,5 +1,5 @@
 from sqlalchemy import select
-
+from fastapi import HTTPException
 from src.auth_service.domain.entities.user import UserCreateSchema, UserResponseSchema
 from src.auth_service.infrastructure.database.models import User
 from src.auth_service.infrastructure.database.session import SessionDep
@@ -15,7 +15,7 @@ class UserRepository:
         await self._session.commit()
         await self._session.refresh(user)
 
-        return user
+        return HTTPException(status_code=201, detail="User added")
 
     async def users(self) -> list[UserResponseSchema]:
         query = select(User)
@@ -24,3 +24,8 @@ class UserRepository:
 
         return result.scalars().all()
 
+    async def user_by_username(self, username: str):
+        query = select(User).where(User.username == username)
+        result = await self._session.execute(query)
+
+        return result.scalar_one()
