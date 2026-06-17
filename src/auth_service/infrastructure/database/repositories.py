@@ -28,3 +28,9 @@ class UserRepository:
         result = await self._session.execute(query)
 
         return result.scalar_one_or_none()
+
+    async def user_exists(self, username: str) -> bool:
+        query = select(User).where(User.username == username)
+        result = await self._session.execute(query)
+
+        return result.scalar_one_or_none() is not None

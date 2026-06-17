@@ -13,8 +13,8 @@ class IUserRepository(Protocol):
     async def users(self) -> list[UserResponseSchema]:
         pass
 
-    async def detail(self, user_id: uuid.UUID) -> UserResponseSchema:
+    async def user_by_username(self, username: str):
         pass
 
-    async def get_by_id(self, user_id: uuid.UUID) -> UserResponseSchema:
+    async def user_exists(self, username: str):
         pass
