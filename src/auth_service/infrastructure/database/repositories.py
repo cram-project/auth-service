@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy import select
 from src.auth_service.domain.entities.user import UserResponseSchema
 from src.auth_service.infrastructure.database.models import User
@@ -34,3 +36,10 @@ class UserRepository:
         result = await self._session.execute(query)
 
         return result.scalar_one_or_none() is not None
+
+    async def detail(self, id: uuid.UUID) -> UserResponseSchema:
+        query = select(User).where(User.id == id)
+        result = await self._session.execute(query)
+
+        return result.scalar_one_or_none()
+
