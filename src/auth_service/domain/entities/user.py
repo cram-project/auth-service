@@ -21,3 +21,9 @@ class UserResponseSchema(BaseModel):
 class UserLoginSchema(BaseModel):
     username: str
     password: str
+
+
+class LoginResponseSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str

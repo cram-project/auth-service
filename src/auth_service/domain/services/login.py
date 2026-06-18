@@ -2,9 +2,10 @@ from sqlalchemy import select
 
 from src.auth_service.domain.entities.user import UserLoginSchema
 from src.auth_service.domain.interfaces.user import IUserRepository
-from src.auth_service.infrastructure.database.models import User
+from src.auth_service.domain.services.payload import build_access_payload
 from src.auth_service.infrastructure.security.password import PasswordHashed
 from src.auth_service.infrastructure.security.token import JWTTokenProvider
+from fastapi import HTTPException
 
 
 class LoginService:
@@ -20,4 +21,18 @@ class LoginService:
         self._tokens = tokens
 
     async def login(self, data: UserLoginSchema):
-        ...
+        user = await self._users.user_by_username(data.username)
+        if not user or not self._hasher.verify(data.password, user.password_hash):
+            raise HTTPException(detail="Invalid username or password", status_code=401)
+
+        if not user.is_active:
+            raise HTTPException(detail="Inactive user", status_code=401)
+
+        access = self._tokens.create_access_token(build_access_payload(user))
+        refresh = self._tokens.create_refresh_token(user.id)
+
+        return {
+            "access_token": access,
+            "refresh_token": refresh,
+            "token_type": "bearer",
+        }

@@ -37,9 +37,8 @@ class UserRepository:
 
         return result.scalar_one_or_none() is not None
 
-    async def detail(self, id: uuid.UUID) -> UserResponseSchema:
+    async def get_user_by_id(self, id: uuid.UUID) -> UserResponseSchema:
         query = select(User).where(User.id == id)
         result = await self._session.execute(query)
 
         return result.scalar_one_or_none()
-
