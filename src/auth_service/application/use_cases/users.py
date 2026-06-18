@@ -2,6 +2,7 @@ from fastapi import Depends
 
 from src.auth_service.domain.services.login import LoginService
 from src.auth_service.domain.services.register import RegisterService
+from src.auth_service.domain.services.users import UserService
 from src.auth_service.infrastructure.database.repositories import UserRepository
 from src.auth_service.infrastructure.database.session import SessionDep
 from src.auth_service.infrastructure.security.password import PasswordHashed
@@ -44,5 +45,8 @@ def get_login_service(
     )
 
 def get_user_service(
-):
-    ...
+        users: UserRepository = Depends(get_user_repository),
+) -> UserService:
+    return UserService(
+        users=users,
+    )

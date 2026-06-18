@@ -18,3 +18,6 @@ class IUserRepository(Protocol):
 
     async def user_exists(self, username: str):
         pass
+
+    async def get_user_by_id(self, id: uuid.UUID):
+        pass

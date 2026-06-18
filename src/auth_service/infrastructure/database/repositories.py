@@ -23,7 +23,10 @@ class UserRepository:
 
         result = await self._session.execute(query)
 
-        return result.scalars().all()
+        return [
+            UserResponseSchema(user_id=user.id, username=user.username, is_staff=user.is_staff, is_active=user.is_active)
+            for user in result.scalars().all()
+        ]
 
     async def user_by_username(self, username: str):
         query = select(User).where(User.username == username)
@@ -37,8 +40,17 @@ class UserRepository:
 
         return result.scalar_one_or_none() is not None
 
-    async def get_user_by_id(self, id: uuid.UUID) -> UserResponseSchema:
+    async def get_user_by_id(self, id: uuid.UUID) -> UserResponseSchema | None:
         query = select(User).where(User.id == id)
         result = await self._session.execute(query)
 
-        return result.scalar_one_or_none()
+        user = result.scalar_one_or_none()
+        if user is None:
+            return None
+
+        return UserResponseSchema(
+            user_id=user.id,
+            username=user.username,
+            is_staff=user.is_staff,
+            is_active=user.is_active
+        )

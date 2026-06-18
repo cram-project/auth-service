@@ -16,6 +16,13 @@ class UserCreateSchema(BaseModel):
 class UserResponseSchema(BaseModel):
     user_id: uuid.UUID
     username: str
+    is_active: bool
+    is_staff: bool
+
+
+class UserPostCreateSchema(BaseModel):
+    user_id: uuid.UUID
+    username: str
 
 
 class UserLoginSchema(BaseModel):
