@@ -1,8 +1,5 @@
 import uuid
-
 from fastapi import HTTPException
-
-from src.auth_service.domain.entities.user import UserResponseSchema
 from src.auth_service.domain.interfaces.user import IUserRepository
 
 
