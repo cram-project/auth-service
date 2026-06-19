@@ -27,13 +27,15 @@ async def get_current_user(
 
     user_id = payload.get("user_id")
     username = payload.get("username")
+    is_staff = payload.get("is_staff")
     if user_id is None or username is None:
         raise credentials_exception
 
     try:
         return UserPayload(
             user_id=uuid.UUID(str(user_id)),
-            username=username
+            username=username,
+            is_staff=is_staff
         )
     except (ValueError, TypeError):
         raise credentials_exception
