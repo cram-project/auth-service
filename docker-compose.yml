@@ -1,6 +1,7 @@
 services:
   auth:
     build: .
+    container_name: cram_auth
     env_file:
       - .env
     environment:
@@ -16,6 +17,7 @@ services:
         condition: service_healthy
     networks:
       - auth-network
+      - cram-shared
     restart: on-failure
 
   postgres:
@@ -43,3 +45,5 @@ volumes:
 networks:
   auth-network:
     driver: bridge
+  cram-shared:
+    external: true

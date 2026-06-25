@@ -1,10 +1,13 @@
 import uuid
+from lib2to3.btm_utils import tokens
 
 from fastapi import APIRouter, Depends
-from src.auth_service.application.use_cases.users import get_register_service, get_login_service, get_user_service
+from src.auth_service.application.use_cases.users import get_register_service, get_login_service, get_user_service, \
+    get_refresh_service
 from src.auth_service.domain.entities.user import UserCreateSchema, UserResponseSchema, LoginResponseSchema, \
-    UserLoginSchema, UserPostCreateSchema, UserPayload
+    UserLoginSchema, UserPostCreateSchema, UserPayload, RefreshTokenSchema
 from src.auth_service.domain.services.login import LoginService
+from src.auth_service.domain.services.refresh_service import RefreshService
 from src.auth_service.domain.services.register import RegisterService
 from src.auth_service.domain.services.users import UserService
 from src.auth_service.infrastructure.security.deps import get_current_user
@@ -47,3 +50,12 @@ async def detail_user(user_id: uuid.UUID ,service: UserService = Depends(get_use
 async def me(current_user: UserPayload = Depends(get_current_user)):
     return current_user
 
+
+@api_v1_router.post("/refresh", response_model=LoginResponseSchema)
+async def refresh(
+        payload: RefreshTokenSchema,
+        service: RefreshService = Depends(get_refresh_service)
+):
+    tokens = await service.refresh(payload.refresh_token)
+
+    return LoginResponseSchema(**tokens)
