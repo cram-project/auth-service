@@ -30,7 +30,7 @@ class RefreshService:
             raise InvalidRefreshTokenError("User not found or inactive")
 
         access = self._tokens.create_access_token(build_access_payload(user))
-        new_refresh = self._tokens.create_refresh_token(user.id)
+        new_refresh = self._tokens.create_refresh_token(user.user_id)
         return {
             "access_token": access,
             "refresh_token": new_refresh,
