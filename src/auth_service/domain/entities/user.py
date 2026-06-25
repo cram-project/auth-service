@@ -1,4 +1,5 @@
 import uuid
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -39,3 +40,8 @@ class LoginResponseSchema(BaseModel):
 
 class RefreshTokenSchema(BaseModel):
     refresh_token: str
+
+
+class UpdateUserSchema(BaseModel):
+    username: str | None = None
+    password: str | None = None

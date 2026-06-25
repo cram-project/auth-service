@@ -1,7 +1,8 @@
 import uuid
 
-from sqlalchemy import select
-from src.auth_service.domain.entities.user import UserResponseSchema
+from sqlalchemy import select, update
+from src.auth_service.domain.entities.user import UserResponseSchema, UpdateUserSchema
+from src.auth_service.domain.services.users import UserUpdateService
 from src.auth_service.infrastructure.database.models import User
 from src.auth_service.infrastructure.database.session import SessionDep
 
@@ -53,4 +54,32 @@ class UserRepository:
             username=user.username,
             is_staff=user.is_staff,
             is_active=user.is_active
+        )
+
+    async def update(self, user_id: uuid.UUID, user_data: UpdateUserSchema):
+        update_values = user_data.model_dump(exclude_unset=True)
+
+        if not update_values:
+            return await self.get_user_by_id(user_id)
+
+        stmt = (
+            update(User)
+            .where(User.id == user_id)
+            .values(**update_values)
+            .returning(User)
+        )
+
+        result = await self._session.execute(stmt)
+        await self._session.commit()
+
+        updated_user = result.scalar_one_or_none()
+
+        if updated_user is None:
+            return None
+
+        return UserResponseSchema(
+            user_id=updated_user.id,
+            username=updated_user.username,
+            is_staff=updated_user.is_staff,
+            is_active=updated_user.is_active
         )

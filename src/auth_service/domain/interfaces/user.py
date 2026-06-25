@@ -1,7 +1,7 @@
 import uuid
 from typing import Protocol, runtime_checkable
 
-from src.auth_service.domain.entities.user import UserCreateSchema, UserResponseSchema
+from src.auth_service.domain.entities.user import UserCreateSchema, UserResponseSchema, UpdateUserSchema
 from src.auth_service.infrastructure.database.models import User
 
 
@@ -20,4 +20,7 @@ class IUserRepository(Protocol):
         pass
 
     async def get_user_by_id(self, id: uuid.UUID):
+        pass
+
+    async def update(self, user_id: uuid.UUID, user_data: UpdateUserSchema):
         pass

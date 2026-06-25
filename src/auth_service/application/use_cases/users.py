@@ -64,3 +64,8 @@ def get_refresh_service(
         users=users,
         tokens=tokens
     )
+
+def get_update_user_service(
+        users: UserRepository = Depends(get_user_repository),
+        tokens:
+)
